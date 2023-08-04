@@ -62,35 +62,48 @@ def split_files(dir_path):
     return dir_path, list2
 
 
+def conclete(train_dataset_size):
+    '''
+    conclete(20)
+    >>>14, 4, 2
+    '''
+    train_size=int(train_dataset_size*.7)
+    val_size=int(train_dataset_size*.2)
+    test_size=int(train_dataset_size-train_size-val_size)
+    return train_size, val_size, test_size
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
+
+
+
 def train_data_split(train_dir):
-    '''
-    if len(list2) == num
-    
-    '''
     
     train_dir_path, list2 = split_files(train_dir)
     # Load train data
     train_data = tf.keras.utils.image_dataset_from_directory(train_dir_path)
     train_data = train_data.map(lambda x,y: (x/255, y)) # Scaling data
 
-
+    
+ 
     # split data
     train_dataset_size=int(len(train_data))
-    train_size=int(train_dataset_size*.7)
-    val_size=int(train_dataset_size*.2)
-    test_size=int(train_dataset_size-train_size-val_size)
+    train_size, val_size, test_size = conclete(train_dataset_size)
 
     print("train dataset size: {}\ntrain size: {}\nval size: {}\ntest size:{}".format(train_dataset_size,train_size,val_size,test_size))
 
+    train_data, train_dataset_size, train_size, val_size, test_size = train_data_split(train_dir)
     train = train_data.take(train_size)
     val = train_data.skip(train_size).take(val_size)
     test = train_data.skip(train_size+val_size).take(test_size)
 
     for images, labels in train_data:
         num += len(images)
-    
-    
+
     return train, val, test
+
+
 
 
 
