@@ -24,10 +24,11 @@ def path_rm_img(data_dir):
     Args:
         data_dir (str): The directory path containing the image files.
     Returns:
-        None
+        list1 (list): Check to the match between input and return.
     Raises:
         None
     """
+    list1 = []
     n=0
     image_exts = ['jpeg','jpg', 'bmp', 'png']
     for image_class in os.listdir(data_dir): 
@@ -42,24 +43,32 @@ def path_rm_img(data_dir):
                 if tip not in image_exts: 
                     print('Image not in ext list {}'.format(image_path))
                     os.remove(image_path)
+                else:
+                    list1.append(image_path)
             except Exception as e: 
                 print('Issue with image {}'.format(image_path))
                 os.remove(image_path)
+    return list1
+
 
                 
 def split_files(dir_path):
 
     print(dir_path)
     if os.path.exists(dir_path):
-        path_rm_img(dir_path)
+        list2 = path_rm_img(dir_path)
     else:
         print("The specified directory does not exist.")
-    return dir_path
+    return dir_path, list2
 
 
 def train_data_split(train_dir):
+    '''
+    if len(list2) == num
     
-    train_dir_path = split_files(train_dir)
+    '''
+    
+    train_dir_path, list2 = split_files(train_dir)
     # Load train data
     train_data = tf.keras.utils.image_dataset_from_directory(train_dir_path)
     train_data = train_data.map(lambda x,y: (x/255, y)) # Scaling data
@@ -76,8 +85,14 @@ def train_data_split(train_dir):
     train = train_data.take(train_size)
     val = train_data.skip(train_size).take(val_size)
     test = train_data.skip(train_size+val_size).take(test_size)
+
+    for images, labels in train_data:
+        num += len(images)
+    
     
     return train, val, test
+
+
 
 def test_data_load(test_dir):
 
@@ -203,6 +218,7 @@ def model_save(model):
     
 def main(args):
     train_path = args.train_directory_path
+    # --train-directory-path の先頭の-を消去し、残りの-を_に変えると指定できる
     test_path = args.test_directory_path
     model = model_build()
     train, val, test = train_data_split(train_path)
@@ -214,6 +230,9 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    # この関数の先頭で宣言された文字列を用いてinputを行う
+    # typeは入力された値の取り扱いを指定する(bool型、int型も指定できる)
+    # requiredは必須はどうかを決める(明記しなければ必須ではなくなるはず　あとで確認する)
     parser.add_argument("--train-directory-path", type=str, required=True)
     parser.add_argument("--test-directory-path", type=str, required=True)
     
