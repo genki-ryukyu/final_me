@@ -36,3 +36,4 @@ git clone https://gitlab.ie.u-ryukyu.ac.jp/e215742/datasets.git
 ```bash
 python3 fine_chuning_vgg16.py  --train-directory-path /path/to/train_dir --test-directory-path /path/to/test_dir
 ```
+# final_me
