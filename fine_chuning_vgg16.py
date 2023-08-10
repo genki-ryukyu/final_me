@@ -71,9 +71,7 @@ def conclete(train_dataset_size):
     val_size=int(train_dataset_size*.2)
     test_size=int(train_dataset_size-train_size-val_size)
     return train_size, val_size, test_size
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+
 
 
 
